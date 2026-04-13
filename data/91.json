@@ -1,0 +1,21 @@
+{
+  "id": 91,
+  "careerId": 127,
+  "careerPictureId": 88,
+  "basecareerPictureId": 91,
+  "careerCode": "4-12-02-01",
+  "careerName": "计算机维修工",
+  "careerPoster": "电脑软硬兼修，故障及时清零",
+  "careerCard": "https://bj-1252348098.cos.ap-beijing.myqcloud.com/occupation/1ed357a4-b3b5-4f51-b90e-9e6e9be69e65.png",
+  "careerDefine": "使用螺丝刀、万用表、电烙铁等工具、仪表，诊断故障，保养、维修计算机的服务人员。",
+  "sponsorName": "江山高级技工学校",
+  "careerGrade": "五级/初级工,四级/中级工,三级/高级工,二级/技师,一级/高级技师",
+  "typeWorks": "计算机板级维修工,计算机芯片级维修工",
+  "majorNames": "航空机电设备维修技术 / 职教本科,计算机与数码设备维修 / 职教中职,微电子技术与器件制造 / 职教中职,办公设备维修-预备技师 / 技工院校,计算机应用与维修-高级 / 技工院校,计算机应用与维修-中级 / 技工院校,通信终端设备制造与维修-中级 / 技工院校",
+  "education": "初中毕业（或相当文化程度）",
+  "isGreen": "0",
+  "isNumber": "0",
+  "posts": "计算机维修工程师,计算机和办公设备维修人员,网络管理员",
+  "pageNo": 0,
+  "pageSize": 0
+}

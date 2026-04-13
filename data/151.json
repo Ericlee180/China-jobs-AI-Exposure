@@ -1,0 +1,21 @@
+{
+  "id": 151,
+  "careerId": 108,
+  "careerPictureId": 148,
+  "basecareerPictureId": 151,
+  "careerCode": "4-08-03-07",
+  "careerName": "无人机测绘操控员",
+  "careerPoster": "指尖丈量山河，云端绘就未来",
+  "careerCard": "https://bj-1252348098.cos.ap-beijing.myqcloud.com/occupation/294969d7-4afd-4b2f-bf6e-51190a5520fc.JPG",
+  "careerDefine": "使用地面监控系统，操控无人飞行器搭载的航摄仪、传感器及其他设备，进行地表数据采集和影像预处理的人员。",
+  "sponsorName": "浙江公路技师学院",
+  "careerGrade": "五级/初级工,四级/中级工,三级/高级工,二级/技师,一级/高级技师",
+  "typeWorks": null,
+  "majorNames": "航空航天工程 / 普通本科,飞行器设计与工程 / 普通本科,无人机系统应用技术 / 职教本科,无人机测绘技术 / 职教专科,飞行器数字化装配技术 / 职教专科,无人机应用技术 / 职教专科,航空地面设备维修 / 职教专科,地图绘制与地理信息系统 / 职教中职,航空摄影测量 / 职教中职,无人机操控与维护 / 职教中职,无人机应用技术-中级 / 技工院校,无人机应用技术-高级 / 技工院校",
+  "education": "初中毕业（或相当文化程度）",
+  "isGreen": "1",
+  "isNumber": "0",
+  "posts": "大地测量员,摄影测量员,地图绘制员,工程测量员,海洋测绘员,地理信息采集员,地理信息处理员,地理信息应用作业员",
+  "pageNo": 0,
+  "pageSize": 0
+}

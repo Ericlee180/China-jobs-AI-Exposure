@@ -1,0 +1,21 @@
+{
+  "id": 123,
+  "careerId": 58,
+  "careerPictureId": 120,
+  "basecareerPictureId": 123,
+  "careerCode": "4-04-05-05",
+  "careerName": "人工智能训练师",
+  "careerPoster": "让数据会思考，让AI更智能",
+  "careerCard": "https://bj-1252348098.cos.ap-beijing.myqcloud.com/occupation/8248cbc5-3d77-4c9e-9980-36639292c70a.png",
+  "careerDefine": "使用智能训练软件，从事人工智能产品使用数据库管理、算法参数设置、人机交互设计、性能测试跟踪等工作的人员。",
+  "sponsorName": "瓴羊智能",
+  "careerGrade": "五级/初级工,四级/中级工,三级/高级工,二级/技师,一级/高级技师",
+  "typeWorks": "数据标注员 ,人工智能算法测试员",
+  "majorNames": "人工智能工程技术 / 职教本科,市场营销 / 职教本科,人工智能技术应用 / 职教专科,大数据技术应用 / 职教中职,人工智能技术应用-预备技师 / 技工院校,人工智能技术应用-高级 / 技工院校",
+  "education": "初中毕业（或相当文化程度）",
+  "isGreen": "0",
+  "isNumber": "1",
+  "posts": "数据标注员,AI训练师,AI产品经理,自然语言处理工程师,机器学习工程师",
+  "pageNo": 0,
+  "pageSize": 0
+}

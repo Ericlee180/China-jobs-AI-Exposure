@@ -1,0 +1,21 @@
+{
+  "id": 54,
+  "careerId": 90,
+  "careerPictureId": 51,
+  "basecareerPictureId": 54,
+  "careerCode": "4-04-05-01",
+  "careerName": "计算机程序设计员",
+  "careerPoster": "用逻辑和代码构筑数字世界",
+  "careerCard": "https://bj-1252348098.cos.ap-beijing.myqcloud.com/occupation/10a57e9f-6ab3-4f70-81cc-44b0e3dbbed8.jpeg",
+  "careerDefine": "从事计算机和移动终端应用程序设计、编制工作的人员。",
+  "sponsorName": "粤嵌科技",
+  "careerGrade": "四级/中级工,三级/高级工,二级/技师,一级/高级技师",
+  "typeWorks": null,
+  "majorNames": "计算机程序设计-中级 / 技工院校,计算机程序设计-高级 / 技工院校,计算机程序设计-预备技师 / 技工院校",
+  "education": "高中毕业（或同等学力）",
+  "isGreen": "0",
+  "isNumber": "1",
+  "posts": "上位机程序员,VBA初级程序员,物流软件程序员,MCU初级程序员,.NET初级程序员,视觉组算法开发组长,前端H5开发组长,CAD软件实施工程师,SAAS软件销售工程师,PDA前后端开发工程师,Linux系统架构师",
+  "pageNo": 0,
+  "pageSize": 0
+}

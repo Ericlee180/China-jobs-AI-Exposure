@@ -1,0 +1,21 @@
+{
+  "id": 128,
+  "careerId": 123,
+  "careerPictureId": 125,
+  "basecareerPictureId": 128,
+  "careerCode": "4-10-04-02",
+  "careerName": "保健按摩师",
+  "careerPoster": "一指透经络 双手解疲乏",
+  "careerCard": "https://bj-1252348098.cos.ap-beijing.myqcloud.com/occupation/2d3eccd7-d394-4d31-b6df-4e1b69b3b4c1.jpg",
+  "careerDefine": "运用经络腧穴知识和中医按摩手法，进行人体特定部位或穴位按摩的人员。",
+  "sponsorName": "北京成人按摩学校",
+  "careerGrade": "五级/初级工,四级/中级工,三级/高级工,二级/技师,一级/高级技师",
+  "typeWorks": "脊柱按摩师,足部按摩师,反射疗法师",
+  "majorNames": "中医康复技术 / 职教专科,中医养生保健 / 职教专科,老年保健与管理 / 职教专科,社区康复 / 职教专科,中医养生保健 / 职教中职,保健按摩-高级 / 技工院校,保健按摩-中级 / 技工院校,美容保健-高级 / 技工院校,美容保健-中级 / 技工院校,康复保健-高级 / 技工院校,康复保健-中级 / 技工院校",
+  "education": "初中毕业（或相当文化程度）",
+  "isGreen": "0",
+  "isNumber": "0",
+  "posts": "中医推拿按摩师,推拿技术总监,艾灸师,康复理疗师,小儿推拿师,足疗技师",
+  "pageNo": 0,
+  "pageSize": 0
+}

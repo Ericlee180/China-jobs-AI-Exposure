@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国职业数据看板 - AI影响度分析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #12121a;
+            --fg: #e0e0e8;
+            --fg2: #888894;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+
+        #wrapper {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 28px 50px;
+        }
+
+        .intro h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+
+        .intro p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--fg2);
+            margin-bottom: 20px;
+        }
+
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 28px;
+            margin-bottom: 20px;
+        }
+
+        .stat-section h3 {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--fg2);
+            margin-bottom: 5px;
+        }
+
+        .stat-big {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .color-toggle {
+            display: flex;
+            gap: 4px;
+        }
+
+        .color-toggle button {
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            background: transparent;
+            color: var(--fg2);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .color-toggle button.active {
+            background: rgba(255,255,255,0.08);
+            color: var(--fg);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+        }
+
+        #tooltip {
+            position: fixed;
+            pointer-events: none;
+            background: var(--bg2);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 340px;
+            opacity: 0;
+            transition: opacity 0.12s;
+            z-index: 20;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+        }
+
+        #tooltip.visible { opacity: 1; }
+        .tt-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #fff; }
+        .tt-exposure { font-size: 12px; margin-bottom: 8px; }
+        .tt-stats { font-size: 12px; color: var(--fg2); }
+        .tt-rationale { font-size: 11px; color: var(--fg2); margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px; }
+
+        .gradient-legend {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--fg2);
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <div class="intro">
+        <h1>中国职业数据看板</h1>
+        <p>基于国家职业分类大典，使用 AI 评估各职业的数字化影响程度。<strong>AI 影响度（0-10分）</strong>：分数越高表示该职业越可能被 AI 重塑。矩形<strong>面积</strong>代表估算的就业规模，<strong>颜色</strong>代表 AI 影响度。</p>
+    </div>
+
+    <div class="controls-row">
+        <div class="color-toggle" id="colorToggle">
+            <button data-mode="exposure" class="active">AI 影响度</button>
+            <button data-mode="pay">薪资水平</button>
+            <button data-mode="education">学历要求</button>
+        </div>
+        <div class="gradient-legend">
+            <span id="legendLow">低</span>
+            <canvas id="gradientLegend" width="80" height="8"></canvas>
+            <span id="legendHigh">高</span>
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+</div>
+
+<div id="tooltip">
+    <div class="tt-title"></div>
+    <div class="tt-exposure"></div>
+    <div class="tt-stats"></div>
+    <div class="tt-rationale"></div>
+</div>
+
+<script>
+    let data = [];
+    let rects = [];
+    let hovered = null;
+    let colorMode = "exposure";
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let dpr = window.devicePixelRatio || 1;
+    const MARGIN = 12, GAP = 1.5;
+
+    // 颜色函数
+    function greenRedCSS(t, alpha) {
+        t = Math.max(0, Math.min(1, t));
+        let r, g, b;
+        if (t < 0.5) {
+            const s = t / 0.5;
+            r = Math.round(30 + s * 200);
+            g = Math.round(180 - s * 20);
+            b = Math.round(40 - s * 20);
+        } else {
+            const s = (t - 0.5) / 0.5;
+            r = Math.round(230 + s * 25);
+            g = Math.round(160 - s * 130);
+            b = Math.round(20 - s * 5);
+        }
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    function exposureColor(v, alpha) {
+        if (v == null) return `rgba(128,128,128,${alpha})`;
+        return greenRedCSS(v / 10, alpha);
+    }
+
+    function payColor(v, alpha) {
+        if (v == null) return `rgba(128,128,128,${alpha})`;
+        const t = 1 - (Math.log(Math.max(25000, Math.min(250000, v))) - Math.log(25000)) / (Math.log(250000) - Math.log(25000));
+        return greenRedCSS(t, alpha);
+    }
+
+    function eduColor(edu, alpha) {
+        const eduLevels = ["初中", "高中", "专科", "本科", "硕士", "博士"];
+        let idx = eduLevels.findIndex(l => edu.includes(l));
+        if (idx < 0) idx = 2;
+        return greenRedCSS(1 - idx / (eduLevels.length - 1), alpha);
+    }
+
+    function tileColorCSS(d, alpha) {
+        if (colorMode === "exposure") return exposureColor(d.exposure, alpha);
+        if (colorMode === "pay") return payColor(d.pay, alpha);
+        if (colorMode === "education") return eduColor(d.education, alpha);
+        return `rgba(128,128,128,${alpha})`;
+    }
+
+    // 布局算法
+    function squarify(items, x, y, w, h) {
+        if (items.length === 0) return [];
+        if (items.length === 1) return [{ ...items[0], rx: x, ry: y, rw: w, rh: h }];
+        const total = items.reduce((s, d) => s + d.value, 0);
+        if (total === 0) return [];
+        const results = [];
+        let remaining = [...items], cx = x, cy = y, cw = w, ch = h;
+        while (remaining.length > 0) {
+            const remTotal = remaining.reduce((s, d) => s + d.value, 0);
+            const vertical = cw >= ch;
+            const side = vertical ? ch : cw;
+            let row = [remaining[0]], rowSum = remaining[0].value;
+            for (let i = 1; i < remaining.length; i++) {
+                const candidate = [...row, remaining[i]];
+                const candidateSum = rowSum + remaining[i].value;
+                if (worstAspect(candidate, candidateSum, side, remTotal, vertical ? cw : ch) <
+                    worstAspect(row, rowSum, side, remTotal, vertical ? cw : ch)) {
+                    row = candidate; rowSum = candidateSum;
+                } else break;
+            }
+            const rowFraction = rowSum / remTotal;
+            const rowThickness = vertical ? cw * rowFraction : ch * rowFraction;
+            let offset = 0;
+            for (const item of row) {
+                const itemFraction = item.value / rowSum;
+                const itemLength = side * itemFraction;
+                if (vertical) results.push({ ...item, rx: cx, ry: cy + offset, rw: rowThickness, rh: itemLength });
+                else results.push({ ...item, rx: cx + offset, ry: cy, rw: itemLength, rh: rowThickness });
+                offset += itemLength;
+            }
+            if (vertical) { cx += rowThickness; cw -= rowThickness; }
+            else { cy += rowThickness; ch -= rowThickness; }
+            remaining = remaining.slice(row.length);
+        }
+        return results;
+    }
+
+    function worstAspect(row, rowSum, side, totalArea, availableExtent) {
+        const rowExtent = availableExtent * (rowSum / totalArea);
+        if (rowExtent === 0) return Infinity;
+        let worst = 0;
+        for (const item of row) {
+            const itemLen = side * (item.value / rowSum);
+            if (itemLen === 0) continue;
+            const aspect = Math.max(rowExtent / itemLen, itemLen / rowExtent);
+            if (aspect > worst) worst = aspect;
+        }
+        return worst;
+    }
+
+    function layout() {
+        const wrapper = document.getElementById("wrapper");
+        const w = wrapper.clientWidth;
+        const h = Math.round(w * 3 / 4);
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        canvas.style.width = w + "px"; canvas.style.height = h + "px";
+        const tx = MARGIN, ty = MARGIN, tw = w - MARGIN * 2, th = h - MARGIN * 2;
+        const byCategory = {};
+        for (const d of data) {
+            const cat = d.category || "其他";
+            if (!byCategory[cat]) byCategory[cat] = [];
+            byCategory[cat].push(d);
+        }
+        const categories = Object.keys(byCategory).map(cat => ({
+            cat, items: byCategory[cat].sort((a, b) => (b.jobs || 1) - (a.jobs || 1)),
+            value: byCategory[cat].reduce((s, d) => s + (d.jobs || 1), 0),
+        })).sort((a, b) => b.value - a.value);
+        const catRects = squarify(categories, tx, ty, tw, th);
+        rects = [];
+        for (const cr of catRects) {
+            const items = cr.items.map(d => ({ ...d, value: d.jobs || 1 }));
+            const innerRects = squarify(items, cr.rx + GAP, cr.ry + GAP, cr.rw - GAP * 2, cr.rh - GAP * 2);
+            for (const ir of innerRects) rects.push(ir);
+        }
+    }
+
+    function draw() {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.fillStyle = "#0a0a0f";
+        ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+        for (const r of rects) {
+            const isHovered = r === hovered;
+            const g = GAP / 2, rx = r.rx + g, ry = r.ry + g, rw = r.rw - g * 2, rh = r.rh - g * 2;
+            if (rw <= 0 || rh <= 0) continue;
+            ctx.fillStyle = tileColorCSS(r, isHovered ? 0.8 : 0.5);
+            ctx.fillRect(rx, ry, rw, rh);
+            if (isHovered) { ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.strokeRect(rx, ry, rw, rh); }
+            if (rw > 50 && rh > 18) {
+                ctx.save(); ctx.beginPath(); ctx.rect(rx + 4, ry + 2, rw - 8, rh - 4); ctx.clip();
+                const fontSize = Math.min(13, Math.max(9, Math.min(rw / 10, rh / 3)));
+                ctx.font = `500 ${fontSize}px -apple-system, system-ui, sans-serif`;
+                ctx.fillStyle = isHovered ? "#fff" : "rgba(255,255,255,0.85)";
+                ctx.textBaseline = "top";
+                ctx.fillText(r.title, rx + 5, ry + 4);
+                ctx.restore();
+            }
+        }
+    }
+
+    function formatNumber(n) {
+        if (n == null) return "—";
+        if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+        if (n >= 1e3) return Math.round(n / 1e3) + "K";
+        return n.toLocaleString();
+    }
+
+    function formatPay(n) { return n == null ? "—" : "¥" + Math.round(n / 1000) + "K"; }
+
+    function showTooltip(d, mx, my) {
+        const tt = document.getElementById("tooltip");
+        tt.querySelector(".tt-title").textContent = d.title;
+        let exposureHtml = `<strong>AI 影响度: ${d.exposure}/10</strong>`;
+        if (d.exposure_rationale) {
+            exposureHtml += `<div style="margin-top:4px;font-size:11px;color:#aaa;">${d.exposure_rationale.substring(0, 150)}...</div>`;
+        }
+        tt.querySelector(".tt-exposure").innerHTML = exposureHtml;
+        tt.querySelector(".tt-stats").innerHTML = `
+            <span>📊 就业规模: ${formatNumber(d.jobs)}</span><br>
+            <span>💰 薪资: ${formatPay(d.pay)}</span><br>
+            <span>🎓 学历: ${d.education || "未知"}</span>
+        `;
+        tt.querySelector(".tt-rationale").innerHTML = "";
+        let tx = mx + 16, ty = my - 16;
+        if (tx + 340 > window.innerWidth) tx = mx - 356;
+        if (ty < 10) ty = my + 16;
+        if (ty + 200 > window.innerHeight) ty = my - 200;
+        tt.style.left = tx + "px"; tt.style.top = ty + "px";
+        tt.classList.add("visible");
+    }
+
+    function hideTooltip() { document.getElementById("tooltip").classList.remove("visible"); }
+
+    function hitTest(mx, my) {
+        const rect = canvas.getBoundingClientRect();
+        const cx = mx - rect.left, cy = my - rect.top;
+        for (let i = rects.length - 1; i >= 0; i--) {
+            const r = rects[i];
+            if (cx >= r.rx && cx < r.rx + r.rw && cy >= r.ry && cy < r.ry + r.rh) return r;
+        }
+        return null;
+    }
+
+    function drawGradientLegend() {
+        const c = document.getElementById("gradientLegend");
+        const gctx = c.getContext("2d");
+        for (let x = 0; x < 80; x++) {
+            const t = x / 79;
+            gctx.fillStyle = greenRedCSS(colorMode === "exposure" ? t : 1 - t, 1);
+            gctx.fillRect(x, 0, 1, 8);
+        }
+        document.getElementById("legendLow").textContent = "低";
+        document.getElementById("legendHigh").textContent = "高";
+    }
+
+    function resize() { dpr = window.devicePixelRatio || 1; layout(); draw(); }
+
+    document.getElementById("colorToggle").addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn || !btn.dataset.mode) return;
+        colorMode = btn.dataset.mode;
+        document.querySelectorAll("#colorToggle button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        drawGradientLegend();
+        draw();
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+        const hit = hitTest(e.clientX, e.clientY);
+        if (hit !== hovered) { hovered = hit; draw(); }
+        if (hovered) { showTooltip(hovered, e.clientX, e.clientY); canvas.style.cursor = "pointer"; }
+        else { hideTooltip(); canvas.style.cursor = "default"; }
+    });
+    canvas.addEventListener("mouseleave", () => { hovered = null; hideTooltip(); draw(); });
+    canvas.addEventListener("click", (e) => { const hit = hitTest(e.clientX, e.clientY); if (hit && hit.url) window.open(hit.url, "_blank"); });
+    window.addEventListener("resize", () => setTimeout(resize, 100));
+
+    fetch("docs/data.json")
+        .then(r => r.json())
+        .then(d => {
+            data = d;
+            drawGradientLegend();
+            resize();
+        });
+</script>
+</body>
+</html>
