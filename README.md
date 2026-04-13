@@ -52,10 +52,12 @@ git clone https://github.com/your-username/china-jobs.git
 cd china-jobs
 
 # Install dependencies
-pip install -r requirements.txt```
+pip install -r requirements.txt
+```
 
 ## Usage
 
+```bash
 # Step by step
 python get_occupations.py      # Fetch occupation list (optional — file already included)
 python scrape.py               # Download career details
@@ -63,9 +65,13 @@ python process.py              # Convert JSON → Markdown
 python make_csv.py             # Extract CSV summary
 python score.py                # Run LLM scoring (requires API key)
 python build_site_data.py      # Build frontend data
+```
 
 # Serve locally
+
+```bash
 cd site && python -m http.server 8000
+```
 
 ## Scoring with LLM
 Requires an API key. Supported options:
