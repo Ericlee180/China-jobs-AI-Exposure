@@ -52,7 +52,7 @@ git clone https://github.com/your-username/china-jobs.git
 cd china-jobs
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -r requirements.txt```
 
 ## Usage
 
