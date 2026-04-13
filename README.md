@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-# Step by step
+### Step by step
 ```bash
 python get_occupations.py      # Fetch occupation list (optional — file already included)
 python scrape.py               # Download career details
@@ -67,7 +67,7 @@ python score.py                # Run LLM scoring (requires API key)
 python build_site_data.py      # Build frontend data
 ```
 
-# Serve locally
+### Serve locally
 ```bash
 cd site && python -m http.server 8000
 ```
