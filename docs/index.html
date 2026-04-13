@@ -396,7 +396,7 @@
     canvas.addEventListener("click", (e) => { const hit = hitTest(e.clientX, e.clientY); if (hit && hit.url) window.open(hit.url, "_blank"); });
     window.addEventListener("resize", () => setTimeout(resize, 100));
 
-    fetch("docs/data.json")
+    fetch("./data.json")
         .then(r => r.json())
         .then(d => {
             data = d;
