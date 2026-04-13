@@ -2,7 +2,7 @@
 
 A benchmark / port of Andrej Karpathy's [jobs](https://github.com/karpathy/jobs) project, adapted for China's job market. Uses data from China's official 职业数字展馆 (Digital Career Museum) covering **111 occupations**, with LLM-powered AI exposure scoring.
 
-**Live demo: [Ericlee180.github.io/china-jobs](https://Ericlee180.github.io/china-jobs)**
+**Live demo: https://ericlee180.github.io/China-jobs-AI-Exposure/**
 
 ## What's here
 
