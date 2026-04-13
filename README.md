@@ -53,32 +53,37 @@ cd china-jobs
 
 # Install dependencies
 pip install -r requirements.txt
+```
 
-Usage
+## Usage
 
 # Step by step
+```bash
 python get_occupations.py      # Fetch occupation list (optional — file already included)
 python scrape.py               # Download career details
 python process.py              # Convert JSON → Markdown
 python make_csv.py             # Extract CSV summary
 python score.py                # Run LLM scoring (requires API key)
 python build_site_data.py      # Build frontend data
+```
 
 # Serve locally
+```bash
 cd site && python -m http.server 8000
+```
 
-Scoring with LLM
+## Scoring with LLM
 Requires an API key. Supported options:
 
 DeepSeek (recommended for China): DEEPSEEK_API_KEY=your_key in .env
 
-Data source
+## Data source
 职业数字展馆 — China's official Digital Career Museum, maintained by the Ministry of Human Resources and Social Security.
 
-Acknowledgments
+## Acknowledgments
 Andrej Karpathy / jobs — Original inspiration and architecture
 
 China's Ministry of Human Resources and Social Security — Open career data
 
-Disclaimer
+## Disclaimer
 This is a personal research tool. AI exposure scores are rough LLM estimates, not rigorous predictions.
